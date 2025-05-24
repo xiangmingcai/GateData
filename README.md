@@ -2,7 +2,7 @@
 Gate data by drawing polygon gate with shinyapp
 
 
-devtools::install_github("Xiangmingcai/polygonDrawR")
+devtools::install_github("Xiangmingcai/GateData")
 
 
 set.seed(123)
