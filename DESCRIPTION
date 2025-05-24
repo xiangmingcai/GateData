@@ -1,0 +1,14 @@
+Package: GateData
+Title: Gate Data with Polygons
+Version: 0.1
+Authors@R: 
+    person("Xiangming", "Cai", , "xiangming_cai@126.com", role = c("aut", "cre", "cph"))
+Description: This package enables users to interactively select a subset of data points by drawing polygon gate on a scatter plot with shinyapp.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    jsonlite,
+    shiny,
+    sp
