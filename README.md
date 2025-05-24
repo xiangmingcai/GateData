@@ -1,12 +1,9 @@
 
 # GateData
 
-<!-- badges: start -->
-<!-- badges: end -->
+The GateData is designed to subset dataset by drawing polygon gate with shinyapp and enable gate trace back
 
-The goal of GateData is to enable users to subset dataset by drawing polygon gate with shinyapp 
-
-## Introduction
+## 🔍 Introduction
 
 Subset dataset is a basic task in almost all kind of analysis. Subset by manual gating could be very useful for study with x and y coordinates information like imaging analysis, single-cell RNA-seq analysis (UMAP, TSNE, and PCA), flow cytometry and so on.
 
@@ -22,7 +19,7 @@ The current ***GateData*** R package allows users to:
 
 3. trace back all gates made and visualize them with ggplot.
 
-## Installation
+## 💻 Installation
 
 You can install the development version of GateData from [GitHub](https://github.com/xiangmingcai) with:
 
@@ -30,7 +27,7 @@ You can install the development version of GateData from [GitHub](https://github
 devtools::install_github("xiangmingcai/GateData")
 ```
 
-## Step 1 data preparation
+## Step 1 📈 data preparation 
 
 This is a basic example which shows you how to use GateData
 
@@ -119,7 +116,7 @@ colnames(df)
 df$gate1 = TRUE
 
 ``` 
-## Step 2 make a gate
+## Step 2 🖊 make a gate
 
 ``` r
 gate1<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
@@ -139,7 +136,7 @@ When the gate is realy, press the **"Confirm and send gate to R"** button, so th
 
 Then, you could close the shinyapp window by click the last **"Close page"** button.
 
-## Step 3 assign data points (in parent gate) with the new gate
+## Step 3 🧮 assign data points (in parent gate) with the new gate
 
 ``` r
 df <-GateDecider(gate = gate1, df = df)
@@ -196,5 +193,16 @@ The parent information is stored in gate object. You may save it for future chec
 
 
 
+## 📚 Citation
+
+If you use this package in your research, please cite it as:
+```
+Cai X (2025). _GateData: Gate Data with Polygons_. R package version 0.1. https://github.com/xiangmingcai/GateData
 
 
+@Manual{,
+    title = {GateData: Gate Data with Polygons},
+    author = {Xiangming Cai},
+    note = {R package version 0.1},
+  }
+```
