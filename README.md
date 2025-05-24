@@ -125,14 +125,19 @@ df$gate1 = TRUE
 gate1<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
               parentgate_col= "gate0", newgate_col= "gate1")
 ``` 
+
+<p align="center">
+  <img src="./images/gate1.jpg" width = 500/>
+</p>
+
 You will see a shinyapp window open. You could easily draw a draft polygon gate on it. 
 
-Then, you could press the first "" button for fine adjustment. You may move the whole gate or adjust the vertexes. The coordinates of vertexes will be shown on the window and update in real time
+Then, you could press the first **"First draw, start fine adjust"** button for fine adjustment. You may move the whole gate or adjust the vertexes. The coordinates of vertexes will be shown on the window and update in real time
 
 
-When the gate is realy, press the "" button, so that the R could receive the information of the gate. 
+When the gate is realy, press the **"Confirm and send gate to R"** button, so that the R could receive the information of the gate. 
 
-Then, you could close the shinyapp window by click the last "" button.
+Then, you could close the shinyapp window by click the last **"Close page"** button.
 
 ## Step 3 assign data points (in parent gate) with the new gate
 
@@ -147,14 +152,25 @@ gate2<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
                     parentgate_col= "gate1", newgate_col= "gate2")
 df <-GateDecider(gate = gate2, df = df)
 ``` 
-## Step 4 visualize gates
+<p align="center">
+  <img src="./images/gate2.jpg" width = 500/>
+</p>
+## Step 4 save results and visualize gates
 
 ``` r
+#save results
+saveRDS(df, file = "df.rds")
+saveRDS(list(gate1,gate2), file = "gatelist.rds")
+saveRDS(c("gate1","gate2"), file = "gatenames.rds")
 
-
+#visualize gates
 polygon_df = GeneratePolygondf(gatelist = list(gate1,gate2),
               gatenames = c("gate1","gate2"),
               x_col= "x1",y_col= "y1")
+
+x_col= "x1"
+y_col= "y1"
+feature_col= "value1"
 
 ggplot() +
   geom_point(data = df, aes(x = .data[[x_col]], 
@@ -168,10 +184,17 @@ ggplot() +
   labs(title = "Scatter Plot with Multiple Polygon Gates", x = "X", y = "Y") +
   theme_minimal()
 ```
+<p align="center">
+  <img src="./images/visualization.jpg" width = 500/>
+</p>
+
 The GeneratePolygondf function could transform gates into one dataframe for ggplot use.
 Of note, in this case, gate3 is a child gate of gate2. So, only these points that are in both gate3 and gate2 are selected in gate3.
 
 **You could make multiple parallel gates by using the same gate as parentgate when using the PolygonGating function to draw polygon gate.**
+The parent information is stored in gate object. You may save it for future check use.
+
+
 
 
 
