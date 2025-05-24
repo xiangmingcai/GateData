@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of GateData is to enable users to draw polygon gate with shinyapp
+The goal of GateData is to enable users to subset dataset by drawing polygon gate with shinyapp 
 
 ## Introduction
 
@@ -49,7 +49,7 @@ df <- data.frame(
   y1 = runif(n),
   value1 = sample(0:99, n, replace = TRUE)
 )
-df$gate1 = TRUE
+df$gate0 = TRUE
 
 ``` 
 The input data is a dataframe with columns for x and y coordinates, feature, and parent gate.
@@ -60,7 +60,7 @@ The x and y coordinates and feature columns needs to be of **continuous** values
 
 The **parentgate is mandatory** and used to tell GateData which subset of data should be used for gating.
 
-**You may simply add a new column with all values set to be True to start up.**
+**You may simply add a new gate0 column with all values set to be True to start up.**
 
 All gate columns used and generated are of **boolean** value, which indicates whether a data point belongs to the gate or not.
 
@@ -122,8 +122,8 @@ df$gate1 = TRUE
 ## Step 2 make a gate
 
 ``` r
-gate2<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
-              parentgate_col= "gate1", newgate_col= "gate2")
+gate1<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
+              parentgate_col= "gate0", newgate_col= "gate1")
 ``` 
 You will see a shinyapp window open. You could easily draw a draft polygon gate on it. 
 
@@ -143,21 +143,18 @@ With the GateDecider function, a new gate column will be add to the df.
 
 If you want to make a child gate of the gate1, you could repeat step 2 and 3.
 ``` r
-gate3<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
-                    parentgate_col= "gate2", newgate_col= "gate3")
+gate2<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
+                    parentgate_col= "gate1", newgate_col= "gate2")
 df <-GateDecider(gate = gate2, df = df)
 ``` 
 ## Step 4 visualize gates
 
 ``` r
 
-x_col= "x1"
-y_col= "y1"
-feature_col= "value1"
 
-polygon_df = GeneratePolygondf(gatelist = list(gate2,gate3),
-              gatenames = c("gate2","gate3"),
-              x_col,y_col)
+polygon_df = GeneratePolygondf(gatelist = list(gate1,gate2),
+              gatenames = c("gate1","gate2"),
+              x_col= "x1",y_col= "y1")
 
 ggplot() +
   geom_point(data = df, aes(x = .data[[x_col]], 
