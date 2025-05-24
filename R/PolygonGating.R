@@ -70,7 +70,7 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
   }
 
   #scale df
-  scaled_df <- scale_data_to_canvas(df, canvas_width*0.8, canvas_height*0.8)
+  scaled_df <- scale_data_to_canvas(df, x_col, y_col, canvas_width*0.8, canvas_height*0.8)
   scaled_df[,"f_value"]<-scaled_df[,feature_col]
   #subset draw_df
   draw_df = scaled_df[(scaled_df[,parentgate_col]), c("x_scaled", "y_scaled","f_value")]

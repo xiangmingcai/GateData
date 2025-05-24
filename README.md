@@ -1,20 +1,54 @@
+
 # GateData
-Gate data by drawing polygon gate with shinyapp
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of GateData is to enable users to draw polygon gate with shinyapp
 
 
-devtools::install_github("Xiangmingcai/GateData")
+## Installation
 
+You can install the development version of GateData from [GitHub](https://github.com/xiangmingcai) with:
+
+``` r
+devtools::install_github("xiangmingcai/GateData")
+```
+
+## Example
+
+This is a basic example which shows you how to use GateData:
+
+First, we wil make some demo date. The input data is a dataframe with columns for x and y coordinates, feature, and parent gate.
+
+The feature column ("value" in this case) will be used to color data points.
+
+The x and y coordinates and feature columns needs to be of continuous values.
+
+The parent gate is mandatory and used to tell GateData which subset of data should be used for gating.
+
+You may simply add a new column with all values to be True to start up.
+
+All gate columns used and generated are of boolean value, which indicates whether a data point belongs to the gate or not.
+
+``` r
+library(GateData)
 
 set.seed(123)
 n <- 10000
 df <- data.frame(
-  ax1 = runif(n),
-  ay1 = runif(n),
-  avalue1 = sample(0:99, n, replace = TRUE)
+  x1 = runif(n),
+  y1 = runif(n),
+  value1 = sample(0:99, n, replace = TRUE)
 )
 df$gate1 = TRUE
 
-gate1<-PolygonGating(df=df, x_col= "ax1", y_col= "ay1", feature_col= "avalue1",
+``` 
+
+
+
+``` r
+gate1<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
               parentgate_col= "gate1", newgate_col= "gate2")
 df <-GateDecider(gate = gate1, df = df)
 
@@ -46,3 +80,5 @@ ggplot() +
   scale_fill_brewer(palette = "Pastel1")+
   labs(title = "Scatter Plot with Multiple Polygon Gates", x = "X", y = "Y") +
   theme_minimal()
+```
+
