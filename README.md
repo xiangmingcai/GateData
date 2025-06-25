@@ -120,7 +120,7 @@ df$gate1 = TRUE
 
 ``` r
 gate1<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
-              parentgate_col= "gate0", newgate_col= "gate1")
+              parentgate_col= "gate0", newgate_col= "gate1",canvas_width=800, canvas_height=400)
 ``` 
 
 <p align="center">
@@ -136,6 +136,12 @@ When the gate is realy, press the **"Confirm and send gate to R"** button, so th
 
 Then, you could close the shinyapp window by click the last **"Close page"** button.
 
+Note: if the dataset is still too big to be used, you may sample the dataframe for PolygonGating use first. In that case, remember to use the full dataset for GateDecider later. So that you could have the gated results for all data points.
+
+``` r
+library(dplyr)
+df_sampled = sample_n(df, 10000) 
+``` 
 ## Step 3 🧮 assign data points (in parent gate) with the new gate
 
 ``` r
@@ -146,7 +152,7 @@ With the GateDecider function, a new gate column will be add to the df.
 If you want to make a child gate of the gate1, you could repeat step 2 and 3.
 ``` r
 gate2<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
-                    parentgate_col= "gate1", newgate_col= "gate2")
+                    parentgate_col= "gate1", newgate_col= "gate2",canvas_width=800, canvas_height=400)
 df <-GateDecider(gate = gate2, df = df)
 ``` 
 <p align="center">
