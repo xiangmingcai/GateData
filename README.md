@@ -148,6 +148,12 @@ When the gate is realy, press the **"Confirm and send gate to R"** button, so th
 
 Then, you could close the shinyapp window by click the last **"Close page"** button.
 
+Note: if the dataset is still too big to be used, you may sample the dataframe for PolygonGating use first. In that case, remember to use the full dataset for GateDecider later. So that you could have the gated results for all data points.
+
+``` r
+library(dplyr)
+df_sampled = sample_n(df, 10000) 
+``` 
 ## Step 3 🧮 assign data points (in parent gate) with the new gate
 
 ``` r
