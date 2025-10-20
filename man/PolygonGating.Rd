@@ -12,7 +12,9 @@ PolygonGating(
   parentgate_col,
   newgate_col,
   canvas_width = 800,
-  canvas_height = 400
+  canvas_height = 400,
+  title_text = "Draw and edit polygon gate",
+  subtitle_text = ""
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ PolygonGating(
 \item{canvas_width}{numeric value, set the width of canvas. Default is 800.}
 
 \item{canvas_height}{numeric value, set the height of canvas. Default is 400.}
+
+\item{title_text}{A character string specifying the main title of the Shiny app or plot.}
+
+\item{subtitle_text}{A character string specifying the subtitle displayed below the main title.}
 }
 \value{
 gate object, incuding used parameters and vertex coordinates of polygon gate.
@@ -63,7 +69,9 @@ gate1 <- PolygonGating(
   y_col = "y1",
   feature_col = "value1",
   parentgate_col = "gate1",
-  newgate_col = "gate2"
+  newgate_col = "gate2",
+  title_text = "TITLE",
+  subtitle_text = "subtitle_text"
 )
 
 # Apply the gate to the data

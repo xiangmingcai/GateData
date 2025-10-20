@@ -11,6 +11,8 @@
 #' @param newgate_col a new string name, which is used to name the new gate
 #' @param canvas_width numeric value, set the width of canvas. Default is 800.
 #' @param canvas_height numeric value, set the height of canvas. Default is 400.
+#' @param title_text A character string specifying the main title of the Shiny app or plot.
+#' @param subtitle_text A character string specifying the subtitle displayed below the main title.
 #' @return gate object, incuding used parameters and vertex coordinates of polygon gate.
 #' @details
 #' This function is suitable for scenarios such as imaging analysis, spatial transcriptome, single cell sequencing analysis, or flow cytometry analysis where manual gating is required.
@@ -36,7 +38,9 @@
 #'   y_col = "y1",
 #'   feature_col = "value1",
 #'   parentgate_col = "gate1",
-#'   newgate_col = "gate2"
+#'   newgate_col = "gate2",
+#'   title_text = "TITLE",
+#'   subtitle_text = "subtitle_text"
 #' )
 #'
 #' # Apply the gate to the data
@@ -46,8 +50,11 @@
 #' @import jsonlite
 #' @export
 PolygonGating <- function(df, x_col, y_col, feature_col,
-                          parentgate_col, newgate_col,
-                          canvas_width=800, canvas_height=400){
+                                 parentgate_col, newgate_col,
+                                 canvas_width=800, canvas_height=400,
+                                 title_text = "Draw and edit polygon gate",
+                                 subtitle_text = ""){
+  options(error = NULL)
   #check input
   cols = colnames(df)
   #check required_cols
@@ -72,6 +79,21 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
   #scale df
   scaled_df <- scale_data_to_canvas(df, x_col, y_col, canvas_width*0.8, canvas_height*0.8)
   scaled_df[,"f_value"]<-scaled_df[,feature_col]
+
+  #raw_x_max
+  # raw_x_min <- min(df[,x_col], na.rm = TRUE)
+  # raw_x_max <- max(df[,x_col], na.rm = TRUE)
+  # raw_y_min <- min(df[,y_col], na.rm = TRUE)
+  # raw_y_max <- max(df[,y_col], na.rm = TRUE)
+  raw_min_max = list(raw_x_min = min(df[,x_col], na.rm = TRUE),
+                     raw_x_max = max(df[,x_col], na.rm = TRUE),
+                     raw_y_min = min(df[,y_col], na.rm = TRUE),
+                     raw_y_max = max(df[,y_col], na.rm = TRUE))
+
+  #raw_x_min
+  #raw_y_max
+  #raw_y_min
+
   #subset draw_df
   draw_df = scaled_df[(scaled_df[,parentgate_col]), c("x_scaled", "y_scaled","f_value")]
 
@@ -94,6 +116,7 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
       let y_max;
       let y_min;
       let is_finalized = false;
+      let raw_min_max;
 
       Shiny.addCustomMessageHandler('initPoints', function(message) {
 
@@ -104,6 +127,7 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
         x_min = message.x_min;
         y_max = message.y_max;
         y_min = message.y_min;
+        raw_min_max = message.raw_min_max;
 
         initFabric(data,canvas_width,canvas_height);
 
@@ -166,9 +190,17 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
 
+        const xMin = raw_min_max.raw_x_min[0];
+        const xMax = raw_min_max.raw_x_max[0];
+        if (xMin === xMax) {
+          xMin -= 5;
+          xMax += 5;
+        }
+        const numTicks_x = 10;
         for (let i = 0; i <= 10; i++) {
           const x = plotArea.x + i * (plotArea.width * 0.1);
-          const label = (i * 0.1).toFixed(1);
+          const x_lab_value = xMin + (i / numTicks_x) * (xMax - xMin);
+          const label = x_lab_value.toFixed(1);
 
           // X tick
           ctx.beginPath();
@@ -183,9 +215,17 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
 
+        const yMin = raw_min_max.raw_y_min[0];
+        const yMax = raw_min_max.raw_y_max[0];
+        if (yMin === yMax) {
+          yMin -= 5;
+          yMax += 5;
+        }
+        const numTicks_y = 10;
         for (let i = 0; i <= 10; i++) {
           const y = plotArea.y + plotArea.height - i * (plotArea.height * 0.1);
-          const label = (i * 0.1).toFixed(1);
+          const y_lab_value = yMin + (i / numTicks_y) * (yMax - yMin);
+          const label = y_lab_value.toFixed(1);
 
           // Y tick
           ctx.beginPath();
@@ -194,7 +234,7 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
           ctx.stroke();
 
           // Y label
-          ctx.fillText(label, plotArea.x - canvas_width * 0.04, y);
+          ctx.fillText(label, plotArea.x - canvas_width * 0.06, y);
         }
 
         // draw data points
@@ -430,7 +470,15 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
 
     "))
       ),
-      titlePanel("Draw and edit polygon gate"),
+      titlePanel(title_text),
+      div(
+        style = paste0(
+          "margin-top: 10px; margin-bottom: 15px; font-size: 16px; color: #444;",
+          "max-width: ", canvas_width, "px; ",
+          "word-wrap: break-word; white-space: normal; "
+        ),
+        subtitle_text
+      ),
       div(style = paste0("position: relative; width: ",canvas_width,"px; height: ",canvas_height,"px;"),
           tags$canvas(id = "bgCanvas", width = canvas_width, height = canvas_height,
                       style = "position: absolute; left: 0; top: 0; z-index: 0;"),
@@ -456,7 +504,8 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
                                   y_max = max(scaled_df[, c(y_col)]),
                                   y_min = min(scaled_df[, c(y_col)]),
                                   canvas_width = canvas_width,
-                                  canvas_height = canvas_height
+                                  canvas_height = canvas_height,
+                                  raw_min_max = toJSON(raw_min_max)
                                 )
       )
     })
@@ -482,14 +531,20 @@ PolygonGating <- function(df, x_col, y_col, feature_col,
     })
   }
   #run app
-  result <- runApp(shinyApp(ui, server))
-  coords = result2list(result)
-  #create polygon gate
-  gate <- create_gate(id = newgate_col, label = newgate_col,
-                      coords = coords,
-                      x_col = x_col, y_col = y_col,
-                      parentgate_col = parentgate_col,
-                      newgate_col = newgate_col)
+  tryCatch({
+    result <- runApp(shinyApp(ui, server))
+    coords = result2list(result)
+    #create polygon gate
+    gate <- create_gate(id = newgate_col, label = newgate_col,
+                        coords = coords,
+                        x_col = x_col, y_col = y_col,
+                        parentgate_col = parentgate_col,
+                        newgate_col = newgate_col)
+  }, error = function(e) {
+    message("Error occurred", conditionMessage(e))
+    gate <- NULL
+  })
   return(gate)
 
 }
+

@@ -27,6 +27,16 @@ You can install the development version of GateData from [GitHub](https://github
 devtools::install_github("xiangmingcai/GateData")
 ```
 
+## Updates
+
+**2025-10-20**: 
+
+1. Add custom canvas size with ***canvas_width*** and ***canvas_height*** paramters in PolygonGating function. 
+
+2. Add custom ***title_text*** and ***subtitle_text*** choice in PolygonGating function. 
+
+3. Use input data scale to label x and y axes.
+
 ## Step 1 📈 data preparation 
 
 This is a basic example which shows you how to use GateData
@@ -120,7 +130,9 @@ df$gate1 = TRUE
 
 ``` r
 gate1<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
-              parentgate_col= "gate0", newgate_col= "gate1")
+              parentgate_col= "gate0", newgate_col= "gate1",
+              canvas_width=800, canvas_height=400,
+              title_text = "TiTlE",subtitle_text = "SuBtItLe")
 ``` 
 
 <p align="center">
@@ -146,7 +158,9 @@ With the GateDecider function, a new gate column will be add to the df.
 If you want to make a child gate of the gate1, you could repeat step 2 and 3.
 ``` r
 gate2<-PolygonGating(df=df, x_col= "x1", y_col= "y1", feature_col= "value1",
-                    parentgate_col= "gate1", newgate_col= "gate2")
+                    parentgate_col= "gate1", newgate_col= "gate2",
+                    canvas_width=800, canvas_height=400,
+                    title_text = "TiTlE",subtitle_text = "SuBtItLe")
 df <-GateDecider(gate = gate2, df = df)
 ``` 
 <p align="center">
